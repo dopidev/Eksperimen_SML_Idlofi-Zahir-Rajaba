@@ -39,7 +39,7 @@ Dataset ini berisi informasi transaksi pelanggan di berbagai pusat perbelanjaan 
 
 ## 📁 Project Structure
 
-```text
+```
 Eksperimen_SML_Idlofi-Zahir-Rajaba/
 ├── .github/
 │   └── workflows/
@@ -54,6 +54,7 @@ Eksperimen_SML_Idlofi-Zahir-Rajaba/
 │   └── customer_shopping_data_preprocessing.csv # Hasil akhir dataset yang siap dilatih
 │
 └── README.md                               # Dokumentasi proyek akhir
+```
 
 ## 🔧 Preprocessing Steps
 
