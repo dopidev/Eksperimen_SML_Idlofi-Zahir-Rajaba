@@ -1,0 +1,64 @@
+============================================================
+PREPROCESSING INFORMATION
+Author: Idlofi-Zahir-Rajaba
+Project: Eksperimen_SML_Idlofi-Zahir-Rajaba
+============================================================
+
+TARGET VARIABLE:
+  Name: total_amount
+  Formula: quantity * price
+
+FEATURES:
+  1. gender
+  2. age
+  3. category
+  4. quantity
+  5. price
+  6. payment_method
+  7. shopping_mall
+  8. price_vs_category_avg
+
+Total features: 8
+
+LABEL ENCODERS MAPPING:
+
+  gender:
+    0 -> Female
+    1 -> Male
+
+  category:
+    0 -> Books
+    1 -> Clothing
+    2 -> Cosmetics
+    3 -> Food & Beverage
+    4 -> Shoes
+    5 -> Souvenir
+    6 -> Technology
+    7 -> Toys
+
+  payment_method:
+    0 -> Cash
+    1 -> Credit Card
+    2 -> Debit Card
+
+  shopping_mall:
+    0 -> Cevahir AVM
+    1 -> Emaar Square Mall
+    2 -> Forum Istanbul
+    3 -> Istinye Park
+    4 -> Kanyon
+    5 -> Mall of Istanbul
+    6 -> Metrocity
+    7 -> Metropol AVM
+    8 -> Viaport Outlet
+    9 -> Zorlu Center
+
+SCALER INFORMATION:
+  Type: StandardScaler
+  Mean (per feature): [0.4425830258302583, 43.48226937269373, 3.155922509225092, 3.0002952029520293, 612.4783512915129, 0.8472693726937269, 4.660313653136531, 1.0000000000000002]
+  Scale (per feature): [0.49669235053218924, 14.982221297175832, 2.1748787932234044, 1.41451356350595, 807.51725578027, 0.7905541970721948, 2.473061634889271, 0.45477415855148806]
+
+FINAL DATASET STATISTICS:
+  Shape: (54200, 9)
+  Target mean: 1747.0661
+  Target std: 2368.8392
