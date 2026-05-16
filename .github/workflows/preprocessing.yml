@@ -6,22 +6,15 @@ on:
       - 'customer_shopping_data_raw/**'
       - 'preprocessing/automate_*.py'
   workflow_dispatch:
-    inputs:
-      force_run:
-        description: 'Force run preprocessing'
-        required: false
-        default: 'false'
 
 jobs:
   preprocess:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4  # Updated to v4
+      - uses: actions/checkout@v4
       
-      - name: Setup Python
-        uses: actions/setup-python@v5  # Updated to v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       
@@ -30,98 +23,32 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandas numpy scikit-learn
       
-      - name: Display folder structure
+      - name: Debug - show folder structure
         run: |
-          echo "=========================================="
-          echo "FOLDER STRUCTURE BEFORE PREPROCESSING"
-          echo "=========================================="
+          pwd
           ls -la
-          echo ""
-          echo "Raw data folder:"
-          ls -la customer_shopping_data_raw/ || echo "Folder not found"
-          echo ""
-          echo "Preprocessing folder:"
-          ls -la preprocessing/ || echo "Folder not found"
+          ls -la customer_shopping_data_raw/ || echo "Raw folder not found"
+          ls -la preprocessing/ || echo "Preprocessing folder not found"
       
-      - name: Run automated preprocessing
+      - name: Run preprocessing
         run: |
           cd preprocessing
-          python automate_Idlofi-Zahir-Rajaba.py
+          python -c "import sys; print(sys.version)"
+          python automate_Idlofi-Zahir-Rajaba.py --input ../customer_shopping_data_raw/customer_shopping_data.csv --output ../customer_shopping_data_preprocessing.csv
       
-      - name: Verify preprocessing result
+      - name: Verify output
         run: |
-          echo "=========================================="
-          echo "VERIFYING PREPROCESSING RESULT"
-          echo "=========================================="
           if [ -f "customer_shopping_data_preprocessing.csv" ]; then
-            echo "✅ Preprocessing successful!"
-            echo ""
-            echo "File size:"
-            ls -lh customer_shopping_data_preprocessing.csv
-            echo ""
-            echo "First 5 rows of processed data:"
-            head -n 5 customer_shopping_data_preprocessing.csv
-            echo ""
-            echo "Dataset info:"
-            python -c "import pandas as pd; df = pd.read_csv('customer_shopping_data_preprocessing.csv'); print(f'Shape: {df.shape}'); print(f'Columns: {list(df.columns)}'); print(f'Target column: total_amount'); print(f'Target stats - Mean: {df[\"total_amount\"].mean():.4f}, Std: {df[\"total_amount\"].std():.4f}')"
+            echo "✅ Success! File created."
+            wc -l customer_shopping_data_preprocessing.csv
+            head -n 3 customer_shopping_data_preprocessing.csv
           else
-            echo "❌ Preprocessing failed - output file not found"
+            echo "❌ Output file not found!"
             exit 1
           fi
       
-      - name: Check info file
-        run: |
-          if [ -f "customer_shopping_data_preprocessing_info.txt" ]; then
-            echo "✅ Info file generated!"
-            echo ""
-            echo "Info file content preview:"
-            head -n 20 customer_shopping_data_preprocessing_info.txt
-          else
-            echo "⚠️ Info file not found (optional)"
-          fi
-      
-      - name: Commit and push processed data
-        uses: stefanzweifel/git-auto-commit-action@v5  # Updated to v5
+      - name: Commit results
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "🤖 Auto-preprocessing: dataset updated by GitHub Actions"
-          file_pattern: |
-            customer_shopping_data_preprocessing.csv
-            customer_shopping_data_preprocessing_info.txt
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions[bot]@users.noreply.github.com"
-          commit_author: "GitHub Actions <actions@github.com>"
-      
-      - name: Upload preprocessing artifacts
-        uses: actions/upload-artifact@v4  # ✅ CHANGED from v3 to v4
-        with:
-          name: preprocessed-data
-          path: |
-            customer_shopping_data_preprocessing.csv
-            customer_shopping_data_preprocessing_info.txt
-          retention-days: 7
-          # If you want to preserve the folder structure, uncomment the next line:
-          # include-hidden-files: true
-      
-      - name: Upload preprocessing log
-        uses: actions/upload-artifact@v4  # ✅ CHANGED from v3 to v4
-        with:
-          name: preprocessing-log
-          path: preprocessing/
-          retention-days: 7
-          # If you want to preserve the folder structure, uncomment the next line:
-          # include-hidden-files: true
-
-  notify:
-    needs: preprocess
-    runs-on: ubuntu-latest
-    if: always()
-    
-    steps:
-      - name: Send status notification
-        run: |
-          if [ "${{ needs.preprocess.result }}" == "success" ]; then
-            echo "✅ Preprocessing completed successfully!"
-          else
-            echo "❌ Preprocessing failed!"
-            exit 1
-          fi
+          commit_message: "Auto-preprocessing: update dataset"
+          file_pattern: "*.csv *.txt"
