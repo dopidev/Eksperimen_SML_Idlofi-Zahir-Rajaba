@@ -18,10 +18,10 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated to v4
       
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5  # Updated to v5
         with:
           python-version: '3.9'
       
@@ -81,7 +81,7 @@ jobs:
           fi
       
       - name: Commit and push processed data
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5  # Updated to v5
         with:
           commit_message: "🤖 Auto-preprocessing: dataset updated by GitHub Actions"
           file_pattern: |
@@ -92,20 +92,24 @@ jobs:
           commit_author: "GitHub Actions <actions@github.com>"
       
       - name: Upload preprocessing artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # ✅ CHANGED from v3 to v4
         with:
           name: preprocessed-data
           path: |
             customer_shopping_data_preprocessing.csv
             customer_shopping_data_preprocessing_info.txt
           retention-days: 7
+          # If you want to preserve the folder structure, uncomment the next line:
+          # include-hidden-files: true
       
       - name: Upload preprocessing log
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # ✅ CHANGED from v3 to v4
         with:
           name: preprocessing-log
           path: preprocessing/
           retention-days: 7
+          # If you want to preserve the folder structure, uncomment the next line:
+          # include-hidden-files: true
 
   notify:
     needs: preprocess
